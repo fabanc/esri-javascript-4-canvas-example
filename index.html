@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Create a FeatureLayer with client side graphics - 4.9</title>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #infoDiv {
+      position: absolute;
+      bottom: 15px;
+      right: 0;
+      max-height: 80%;
+      max-width: 300px;
+      background-color: black;
+      padding: 8px;
+      border-top-left-radius: 5px;
+      color: white;
+      opacity: 0.8;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.9/"></script>
+
+  <script>
+    require([
+      "esri/views/MapView",
+      "esri/Map",
+      "esri/layers/FeatureLayer",
+      "esri/geometry/Point",
+      "esri/widgets/Legend",
+      "esri/request"
+    ], function(MapView, Map, FeatureLayer, Point, Legend, esriRequest) {
+
+      var layer, legend;
+
+	  
+      /**************************************************
+       * Create the map and view
+       **************************************************/
+
+      var map = new Map({
+        basemap: "dark-gray"
+      });
+
+      // Create MapView
+      var view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-73.5505, 45.5048],
+        zoom: 17,
+        // customize ui padding for legend placement
+        ui: {
+          padding: {
+            bottom: 15,
+            right: 0
+          }
+        }
+      });
+
+      /**************************************************
+       * Define the renderer for symbolizing earthquakes
+       **************************************************/
+
+
+      view.when(function() {
+		console.log("View loaded");
+		
+		var polygonLayer = new FeatureLayer({
+			url: "https://services1.arcgis.com/vY6WuhLW0HkFe6Fl/arcgis/rest/services/HarbourSymbols/FeatureServer/0}"
+		})
+		
+		map.add(polygonLayer);
+	  })
+
+
+
+      // Executes if data retrieval was unsuccessful.
+      function errback(error) {
+        console.error("Creating legend failed. ", error);
+      }
+
+    });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+  <div id="infoDiv">
+    <h2>Graphic Example</h2>
+    Port de Montreal
+  </div>
+</body>
+</html>

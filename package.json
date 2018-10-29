@@ -1,0 +1,29 @@
+{
+  "name": "esri-javascript-4-canvas-example",
+  "version": "0.0.1",
+  "description": "A package to demonstrate how to use the esri 4.x API along with Canvas",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"start": "http-server --cors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabanc/esri-javascript-4-canvas-example.git"
+  },
+  "keywords": [
+    "GIS",
+    "Canvas",
+    "Fancy",
+    "Drawing"
+  ],
+  "author": "Fabien Ancelin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fabanc/esri-javascript-4-canvas-example/issues"
+  },
+  "homepage": "https://github.com/fabanc/esri-javascript-4-canvas-example#readme",
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  }
+}
