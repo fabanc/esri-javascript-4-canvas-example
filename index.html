@@ -28,6 +28,40 @@
     }
   </style>
 
+
+    <!-- Loading Dojo Configuration -->
+    <!--
+    <script type="text/javascript">
+      var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+      var locale = /locale=([a-z][a-z]-[a-z][a-z])/gi.exec(window.location.search);
+      if(locale && locale.length===2) {
+        locale = locale[1];
+      }
+      else {
+        if(navigator.language){
+          locale = navigator.language.toLowerCase();//'en-us';
+        }else if(navigator.browserLanguage){
+          locale = navigator.browserLanguage.toLowerCase();//'en-us';
+        }
+      }
+      document.documentElement.lang = locale;
+      var dojoConfig = {
+          // The locationPath logic below may look confusing but all its doing is
+          // enabling us to load the api from a CDN and load local modules from the correct location.
+        locale: locale,
+        has: {
+          "esri-featurelayer-webgl": 0
+        },
+        packages : [
+        {
+        name : "missionSymbols",
+        location : './lib/MissionTaskVerbSymbols'
+        }
+      ]
+      };
+  </script>
+  -->
+
   <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
   <script src="https://js.arcgis.com/4.9/"></script>
 
@@ -38,8 +72,9 @@
       "esri/layers/FeatureLayer",
       "esri/geometry/Point",
       "esri/widgets/Legend",
-      "esri/request"
-    ], function(MapView, Map, FeatureLayer, Point, Legend, esriRequest) {
+      "esri/request",
+      "./lib/milsymbol/milsymbol.js"
+    ], function(MapView, Map, FeatureLayer, Point, Legend, esriRequest, ms) {
 
       var layer, legend;
 
@@ -70,17 +105,29 @@
       /**************************************************
        * Define the renderer for symbolizing earthquakes
        **************************************************/
-
-
       view.when(function() {
-		console.log("View loaded");
+        console.log("View loaded");
+        
+        var polygonLayer = new FeatureLayer({
+          url: "https://services1.arcgis.com/vY6WuhLW0HkFe6Fl/arcgis/rest/services/HarbourSymbols/FeatureServer/0}"
+        });
 		
-		var polygonLayer = new FeatureLayer({
-			url: "https://services1.arcgis.com/vY6WuhLW0HkFe6Fl/arcgis/rest/services/HarbourSymbols/FeatureServer/0}"
-		})
-		
-		map.add(polygonLayer);
-	  })
+        map.add(polygonLayer);
+        
+        var symbolImage = new ms.Symbol("sfgpewrh--mt", {
+          size: 35,
+          quantity: 200,
+          staffComments: "for reinforcements".toUpperCase(),
+          additionalInformation: "added support for JJ".toUpperCase(),
+          direction: (750 * 360) / 6400,
+          type: "machine gun".toUpperCase(),
+          dtg: "30140000ZSEP97",
+          location: "0900000.0E570306.0N"
+        }).asCanvas(3).toDataURL();
+
+        console.log("Created Image:");
+
+	    })
 
 
 
