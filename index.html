@@ -12,6 +12,17 @@
       margin: 0;
       height: 100%;
       width: 100%;
+      position: absolute;
+    }
+
+    #canvasLayer{
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 99;
+      pointer-events:none;
+      position: absolute;
     }
 
     #infoDiv {
@@ -73,8 +84,11 @@
       "esri/geometry/Point",
       "esri/widgets/Legend",
       "esri/request",
+      "esri/renderers/SimpleRenderer",
+      "esri/symbols/PictureFillSymbol",
+      "esri/core/watchUtils",
       "./lib/milsymbol/milsymbol.js"
-    ], function(MapView, Map, FeatureLayer, Point, Legend, esriRequest, ms) {
+    ], function(MapView, Map, FeatureLayer, Point, Legend, esriRequest, SimpleRenderer, PictureFillSymbol, watchUtils, ms) {
 
       var layer, legend;
 
@@ -84,7 +98,7 @@
        **************************************************/
 
       var map = new Map({
-        basemap: "dark-gray"
+        basemap: "streets"
       });
 
       // Create MapView
@@ -108,28 +122,46 @@
       view.when(function() {
         console.log("View loaded");
         
-        var polygonLayer = new FeatureLayer({
-          url: "https://services1.arcgis.com/vY6WuhLW0HkFe6Fl/arcgis/rest/services/HarbourSymbols/FeatureServer/0}"
-        });
-		
-        map.add(polygonLayer);
-        
-        var symbolImage = new ms.Symbol("sfgpewrh--mt", {
-          size: 35,
-          quantity: 200,
-          staffComments: "for reinforcements".toUpperCase(),
-          additionalInformation: "added support for JJ".toUpperCase(),
-          direction: (750 * 360) / 6400,
-          type: "machine gun".toUpperCase(),
-          dtg: "30140000ZSEP97",
-          location: "0900000.0E570306.0N"
+
+      var symbolImage = new ms.Symbol("SFGPU-----G-", {
+          size: 75,
         }).asCanvas(3).toDataURL();
 
         console.log("Created Image:");
 
+
+        var symbol = {
+            type: "picture-fill",  // autocasts as new PictureFillSymbol()
+            url: symbolImage,
+            width: "80px",
+            height: "80px",
+            outline: {
+              style: "solid"
+            }
+        }
+        console.log("Created Symbol");
+
+
+        var renderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: symbol
+        };
+
+        console.log("Created Renderer");
+
+        var polygonLayer = new FeatureLayer({
+          url: "https://services1.arcgis.com/vY6WuhLW0HkFe6Fl/arcgis/rest/services/HarbourSymbols/FeatureServer/0",
+          renderer: renderer
+        });
+
+
+		
+        map.add(polygonLayer);
+
+        view.on("click", function(){console.log("Clicked");})
+        
+  
 	    })
-
-
 
       // Executes if data retrieval was unsuccessful.
       function errback(error) {
@@ -141,6 +173,7 @@
 </head>
 
 <body>
+    <canvas id="canvasLayer"></canvas>
   <div id="viewDiv"></div>
   <div id="infoDiv">
     <h2>Graphic Example</h2>
